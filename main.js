@@ -1,57 +1,91 @@
-"use strict"
+"use strict";
+
+const coffees = loadCoffees();
 
 function renderCoffee(coffee) {
-    let html = '<tr class="coffee">';
-    html += `<td>${coffee.id}</td>`;
-    html += `<td>${coffee.name}</td>`;
-    html += `<td>${coffee.roast}</td>`;
-    html += '</tr>';
-
-    return html;
+    return `
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3 coffee-card" data-id="${coffee.id}">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="card-title h5 mb-0">${coffee.name}</span>
+                    <button type="button" class="close" aria-label="Close" onclick="removeCoffee(${coffee.id})">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">${coffee.roast}</p>
+                </div>
+            </div>
+        </div>`;
 }
 
 function renderCoffees(coffees) {
-    let html = '';
-    for(let i = coffees.length - 1; i >= 0; i--) {
-        html += renderCoffee(coffees[i]);
-    }
-    return html;
+    return coffees.map(coffee => renderCoffee(coffee)).join('');
 }
 
 function updateCoffees(e) {
-    e.preventDefault(); // don't submit the form, we just want to update the data
+    e.preventDefault();
     const selectedRoast = roastSelection.value;
-    const filteredCoffees = [];
-    coffees.forEach( coffee => {
-        if (coffee.roast === selectedRoast) {
-            filteredCoffees.push(coffee);
-        }
+    const searchTerm = searchInput.value.toLowerCase();
+    const filteredCoffees = coffees.filter(coffee => {
+        return (coffee.roast === selectedRoast || selectedRoast === 'all') &&
+            coffee.name.toLowerCase().includes(searchTerm);
     });
-    tbody.innerHTML = renderCoffees(filteredCoffees);
+    coffeeContainer.innerHTML = renderCoffees(filteredCoffees);
 }
 
-// from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
-const coffees = [
-    {id: 1, name: 'Light City', roast: 'light'},
-    {id: 2, name: 'Half City', roast: 'light'},
-    {id: 3, name: 'Cinnamon', roast: 'light'},
-    {id: 4, name: 'City', roast: 'medium'},
-    {id: 5, name: 'American', roast: 'medium'},
-    {id: 6, name: 'Breakfast', roast: 'medium'},
-    {id: 7, name: 'High', roast: 'dark'},
-    {id: 8, name: 'Continental', roast: 'dark'},
-    {id: 9, name: 'New Orleans', roast: 'dark'},
-    {id: 10, name: 'European', roast: 'dark'},
-    {id: 11, name: 'Espresso', roast: 'dark'},
-    {id: 12, name: 'Viennese', roast: 'dark'},
-    {id: 13, name: 'Italian', roast: 'dark'},
-    {id: 14, name: 'French', roast: 'dark'},
-];
+function addCoffee(e) {
+    e.preventDefault();
+    const newName = newCoffeeNameInput.value.trim();
+    const newRoast = newCoffeeRoastSelect.value;
+    if(newName !== '') {
+        const newCoffee = {
+            id: coffees.length + 1,
+            name: newName,
+            roast: newRoast
+        };
+        coffees.push(newCoffee);
+        coffeeContainer.innerHTML = renderCoffees(coffees);
+        saveCoffees();
+    } else {
+        alert('Please enter a coffee name.');
+    }
+}
 
-const tbody = document.querySelector('#coffees');
-const submitButton = document.querySelector('#submit');
+function removeCoffee(coffeeId) {
+    const coffeeIndex = coffees.findIndex(coffee => coffee.id === coffeeId);
+    if (coffeeIndex !== -1) {
+        coffees.splice(coffeeIndex, 1);
+        saveCoffees();
+        coffeeContainer.innerHTML = renderCoffees(coffees);
+    }
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', function() {
+    searchForm.addEventListener('submit', updateCoffees);
+    searchInput.addEventListener('keyup', updateCoffees);
+    roastSelection.addEventListener('change', updateCoffees);
+    addCoffeeForm.addEventListener('submit', addCoffee);
+});
+
+// Page Initialization
+const coffeeContainer = document.querySelector('#coffees');
+const searchForm = document.querySelector('#search-form');
+const searchInput = document.querySelector('#search');
 const roastSelection = document.querySelector('#roast-selection');
+const addCoffeeForm = document.querySelector('#add-coffee-form');
+const newCoffeeNameInput = document.querySelector('#new-coffee-name');
+const newCoffeeRoastSelect = document.querySelector('#new-coffee-roast');
 
-tbody.innerHTML = renderCoffees(coffees);
+coffeeContainer.innerHTML = renderCoffees(coffees.sort((a, b) => a.id - b.id));
 
-submitButton.addEventListener('click', updateCoffees);
+function saveCoffees() {
+    localStorage.setItem('coffees', JSON.stringify(coffees));
+}
+
+function loadCoffees() {
+    const savedCoffees = localStorage.getItem('coffees');
+    return savedCoffees ? JSON.parse(savedCoffees) : [];
+}
+
