@@ -1,5 +1,6 @@
 "use strict";
 
+
 const coffees = loadCoffees();
 
 function renderCoffee(coffee) {
