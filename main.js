@@ -1,6 +1,8 @@
 "use strict";
 
-let cart = [];
+let cart = loadCart();
+renderCartItems(); // Render the cart items on the page
+updateCartTotal(); // Update the total displayed on the page
 
 function addToCart(coffeeId, buttonElement) {
     const sizeSelect = buttonElement.previousElementSibling; // Get the select element
@@ -9,7 +11,7 @@ function addToCart(coffeeId, buttonElement) {
     const coffee = coffees.find(coffee => coffee.id === coffeeId);
 
     const cartItem = {
-        id: coffee.id,
+        id: cart.length + 1,
         name: coffee.name,
         size: size,
         price: price
@@ -18,19 +20,29 @@ function addToCart(coffeeId, buttonElement) {
     cart.push(cartItem);
     renderCartItems();
     updateCartTotal();
+    saveCart()
 }
 
 function renderCartItems() {
     const cartItemsContainer = document.getElementById('cart-items');
-    cartItemsContainer.innerHTML = ''; // Clear the cart list before re-rendering
+    cartItemsContainer.innerHTML = ''; // Clear the container before re-rendering
     cart.forEach(item => {
         cartItemsContainer.innerHTML += `
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 ${item.name} - ${item.size}
                 <span class="badge bg-danger rounded-pill">$${item.price}</span>
+                <button type="button" class="btn-close" aria-label="Close" onclick="removeItem(${item.id})">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
             </li>`;
     });
+
+    // Toggle the visibility of the clear cart button
+    const clearCartButton = document.getElementById('clear-cart-button');
+    clearCartButton.style.display = cart.length > 0 ? 'block' : 'none';
 }
+
+
 
 function updateCartTotal() {
     let total = 0;
@@ -131,13 +143,18 @@ function saveCoffees() {
     localStorage.setItem('coffees', JSON.stringify(coffees));
 }
 
+function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function loadCart() {
+    const savedCart = localStorage.getItem('cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+}
+
 function loadCoffees() {
     const savedCoffees = localStorage.getItem('coffees');
     return savedCoffees ? JSON.parse(savedCoffees) : [];
-}
-function removeAll() {
-    coffees = [];
-
 }
 
 function removeAll() {
@@ -150,5 +167,31 @@ function removeAll() {
     // Remove the specific item from local storage
     localStorage.removeItem('coffees');
 
+}
+
+function removeItem(itemId) {
+    // Remove item from cart
+    cart = cart.filter(item => item.id !== itemId);
+    saveCart();
+    renderCartItems();
+    updateCartTotal();
+}
+
+
+function clearCart() {
+    // Clear the cart array
+    cart = [];
+
+    // Update the display
+    document.getElementById('cart-items').innerHTML = '';
+
+    // Update the total
+    updateCartTotal();
+
+    // Hide the clear cart button
+    document.getElementById('clear-cart-button').style.display = 'none';
+
+    // Remove the specific item from local storage
+    localStorage.removeItem('cart');
 }
 
