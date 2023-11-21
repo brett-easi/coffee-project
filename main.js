@@ -1,15 +1,18 @@
 "use strict";
 
 
-const coffees = loadCoffees();
+let coffees = loadCoffees();
 
 function renderCoffee(coffee) {
+    // Assign a class based on the roast type
+    const roastClass = `card-${coffee.roast}`;
+
     return `
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3 coffee-card" data-id="${coffee.id}">
-            <div class="card h-100">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3" data-id="${coffee.id}">
+            <div class="card h-100 ${roastClass}">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span class="card-title h5 mb-0">${coffee.name}</span>
-                    <button type="button" class="close" aria-label="Close" onclick="removeCoffee(${coffee.id})">
+                    <button type="button" class="btn-close" aria-label="Close" onclick="removeCoffee(${coffee.id})">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -88,5 +91,17 @@ function saveCoffees() {
 function loadCoffees() {
     const savedCoffees = localStorage.getItem('coffees');
     return savedCoffees ? JSON.parse(savedCoffees) : [];
+}
+
+function removeAll() {
+    // Clear the coffees array
+    coffees = [];
+
+    // Update the display
+    coffeeContainer.innerHTML = '';
+
+    // Remove the specific item from local storage
+    localStorage.removeItem('coffees');
+
 }
 

@@ -5,34 +5,13 @@
     <title>Coffee!</title>
     <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="/style.css" rel="stylesheet">
 </head>
 <body>
-<style>
-    body {
-        background-color: chocolate;
-
-    }
-    h1 {
-        font-size: 89px;
-        color: wheat;
-        font-family: "fangsong";
-
-    }
-    h3 {
-        font-size: 25px;
-        color: wheat;
-        font-family: "fangsong";
-    }
-
-
-
-
-</style>
 <div class="container mt-4">
     <h1 class="text-center mb-4">Coffee!</h1>
-    <form id="search-form" class="row mb-4 g-2 align-items-end"> <!-- Use row and g-2 for spacing -->
-        <div class="col-auto"> <!-- Make the dropdown smaller -->
-            <label for="roast-selection" class="visually-hidden">Roast Selection</label>
+    <form id="search-form" class="row mb-4 g-2 align-items-center"> <!-- Align items vertically -->
+        <div class="col-sm-3 col-md-2"> <!-- Adjust the column size for the dropdown -->
             <select id="roast-selection" class="form-select">
                 <option value="all">All</option>
                 <option value="light">Light</option>
@@ -40,8 +19,7 @@
                 <option value="dark">Dark</option>
             </select>
         </div>
-        <div class="col"> <!-- Make the text input larger -->
-
+        <div class="col"> <!-- This will take up the remaining space -->
             <input id="search" type="text" class="form-control" placeholder="Search by coffee name">
         </div>
     </form>
@@ -57,6 +35,7 @@
                 </select>
                 <button type="submit" class="btn btn-secondary btn-block">Add Coffee</button>
             </form>
+            <button type="submit" class="btn btn-danger btn-block mt-3" onclick="removeAll()">Remove All</button>
         </div>
         <div class="col-lg-8">
             <div id="coffees" class="row"></div>
