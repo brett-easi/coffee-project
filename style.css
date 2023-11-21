@@ -1,19 +1,8 @@
-table {
-    border-collapse: collapse;
-    margin: 15px 0;
-}
-
-td, th {
-    border: 1px solid black;
-    padding: 5px 10px;
-}
 body {
-   background-color: chocolate;
-    }
+    background-color: chocolate;
 
-
+}
 h1 {
-
     font-size: 89px;
     color: wheat;
     font-family: "fangsong";
@@ -24,7 +13,57 @@ h3 {
     color: wheat;
     font-family: "fangsong";
 }
-.roast {
-    background-color: wheat;
+
+table {
+    border-collapse: collapse;
+    margin: 15px 0;
 }
 
+td, th {
+    border: 1px solid black;
+    padding: 5px 10px;
+}
+
+
+.card-light {
+    background-color: #f0e5cf;
+    border-color: #f0e5cf;
+}
+
+.card-medium {
+    background-color: #b18f6a;
+    border-color: #b18f6a;
+}
+
+.card-dark {
+    background-color: #4b3832;
+    border-color: #4b3832;
+    color: #fff;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    opacity: 0.6;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+/* Ensure the close button is visible on dark backgrounds */
+.card-dark .btn-close {
+    filter: invert(1);
+    opacity: 0.8;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
