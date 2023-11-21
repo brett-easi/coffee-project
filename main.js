@@ -89,4 +89,8 @@ function loadCoffees() {
     const savedCoffees = localStorage.getItem('coffees');
     return savedCoffees ? JSON.parse(savedCoffees) : [];
 }
+function removeAll() {
+    coffees = [];
+
+}
 
