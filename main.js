@@ -1,5 +1,42 @@
 "use strict";
 
+let cart = [];
+
+function addToCart(coffeeId, buttonElement) {
+    const sizeSelect = buttonElement.previousElementSibling; // Get the select element
+    const size = sizeSelect.options[sizeSelect.selectedIndex].text;
+    const price = parseInt(sizeSelect.value, 10);
+    const coffee = coffees.find(coffee => coffee.id === coffeeId);
+
+    const cartItem = {
+        id: coffee.id,
+        name: coffee.name,
+        size: size,
+        price: price
+    };
+
+    cart.push(cartItem);
+    renderCartItems();
+    updateCartTotal();
+}
+
+function renderCartItems() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    cartItemsContainer.innerHTML = ''; // Clear the cart list before re-rendering
+    cart.forEach(item => {
+        cartItemsContainer.innerHTML += `
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                ${item.name} - ${item.size}
+                <span class="badge bg-danger rounded-pill">$${item.price}</span>
+            </li>`;
+    });
+}
+
+function updateCartTotal() {
+    let total = 0;
+    cart.forEach(item => total += item.price);
+    document.getElementById('cart-total').textContent = 'Total: $' + total;
+}
 
 let coffees = loadCoffees();
 
@@ -18,6 +55,12 @@ function renderCoffee(coffee) {
                 </div>
                 <div class="card-body">
                     <p class="card-text">${coffee.roast}</p>
+                    <select class="form-select coffee-size">
+                        <option value="5">Small ($5)</option>
+                        <option value="10">Medium ($10)</option>
+                        <option value="15">Large ($15)</option>
+                    </select>
+                    <button type="button" class="btn btn-secondary mt-2" onclick="addToCart(${coffee.id}, this)">Add to Cart</button>
                 </div>
             </div>
         </div>`;
